@@ -57,11 +57,20 @@ cc.Class({
 			this.sp.x = 0
 		}
 
+    this.lv = this.node.getComponent(cc.RigidBody).linearVelocity
 		if (this.sp.x) {
-			this.node.x += this.sp.x * this._speed * dt
+			// this.node.x += this.sp.x * this._speed * dt
+      this.lv.y = 0
+      this.lv.x = this.sp.x * this._speed
 		} else if (this.sp.y) {
-			this.node.y += this.sp.y * this._speed * dt
-		}
+			// this.node.y += this.sp.y * this._speed * dt
+      this.lv.x = 0
+      this.lv.y = this.sp.y * this._speed
+		} else {
+      this.lv.x = 0
+      this.lv.y = 0
+    }
+    this.node.getComponent(cc.RigidBody).linearVelocity = this.lv
 		let state = ''
 		if(this.sp.x == 1) {
 			state = 'hero_right'
