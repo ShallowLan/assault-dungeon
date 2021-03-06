@@ -42,6 +42,7 @@ cc.Class({
 
 	},
 	update(dt) {
+		if(window.dialog && window.dialog.active === true) return
 		if (input[cc.macro.KEY.w] || input[cc.macro.KEY.up]) {
 			this.sp.y = 1
 		} else if (input[cc.macro.KEY.s] || input[cc.macro.KEY.down]) {

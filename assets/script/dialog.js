@@ -16,22 +16,13 @@ cc.Class({
     textLabel: cc.Label
   },
   onLoad() {
-    this.init([
-      { role: 1, coentent: '我是勇士' },
-      { role: 2, coentent: '我是胡旭东' },
-      { role: 1, coentent: '我三天姿内撒了你'},
-      { role: 2, coentent: '我不信'},
-    ])
+    window.dialog = this.node
     cc.systemEvent.on('keydown', this.onKeydown, this)
-    cc.systemEvent.on(cc.Node.EventType.MOUSE_DOWN, function (event) {
-      console.log('Mouse down');
-    }, this);
   },
   onDestroy() {
     cc.systemEvent.off('keydown', this.onKeydown, this)
   },
   onMousedown() {
-    console.log('___________________((')
   },
   onKeydown(e) {
     switch(e.keyCode) {
@@ -42,12 +33,17 @@ cc.Class({
     }
   },
   init(testDataArr) {
+    this.nowText = null
+    this.textEnd = true
+    this.tt = 0
+
     this.textIndex = -1
     this.testDataArr = testDataArr
     this.node.active = true
     this.nextTextData()
   },
   nextTextData() {
+    if(!this.textEnd) return
     if (++this.textIndex < this.testDataArr.length) {
       this.setTextData(this.testDataArr[this.textIndex])
     } else {
@@ -55,8 +51,11 @@ cc.Class({
     }
   },
   setTextData(textData) {
+    if(!this.textEnd) return
+    this.textEnd = false
     this.nameLabel.string = roleMap[textData.role].name
-    this.textLabel.string = textData.coentent
+    this.textLabel.string = ''
+    this.nowText = textData.content
 
     cc.loader.loadRes(
       roleMap[textData.role].url,
@@ -70,5 +69,17 @@ cc.Class({
     this.node.active = false
   },
   start() {},
-  // update (dt) {},
+  update (dt) {
+    if(!this.nowText) return
+    this.tt += dt
+    if(this.tt > 0.1) {
+      if(this.textLabel.string.length< this.nowText.length){
+        this.textLabel.string = this.nowText.slice(0,this.textLabel.string.length+1)
+      } else {
+        this.textEnd = true
+        this.nowText = null
+      }
+      this.tt = 0
+    }
+  },
 })
